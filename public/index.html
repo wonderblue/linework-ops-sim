@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#f4f6f7" />
+  <title>Linework — a company, in motion</title>
+  <style>
+    :root {
+      --ink: #17262f; --muted: #62737c; --line: #dbe2e5; --paper: #ffffff; --canvas: #f3f6f7;
+      --navy: #153340; --teal: #147d78; --teal-soft: #e0f3ef; --amber: #bb6b14; --amber-soft: #fff2df;
+      --red: #b54747; --red-soft: #fde8e5; --blue: #346d9a; --blue-soft: #e7f0f8; --green: #307c59;
+      --shadow: 0 10px 32px rgba(29, 54, 66, .055); --radius: 14px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--canvas); color: var(--ink); font: 14px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 3px solid #1f86a0; outline-offset: 3px; }
+    a { color: #136c78; text-underline-offset: 3px; }
+    .shell { min-height: 100vh; }
+    .topbar { height: 64px; background: var(--paper); border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; padding: 0 32px; position: sticky; top: 0; z-index: 20; }
+    .brand { display: flex; align-items: center; gap: 11px; color: var(--ink); text-decoration: none; font-weight: 760; letter-spacing: -.03em; font-size: 17px; }
+    .brand-mark { width: 29px; height: 29px; border-radius: 9px; background: var(--navy); display: grid; place-items: center; color: white; }
+    .brand-mark svg { width: 18px; height: 18px; }
+    .top-right { display: flex; gap: 18px; align-items: center; color: var(--muted); font-size: 12px; }
+    .pill { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--line); background: #fff; padding: 6px 10px; border-radius: 999px; color: #40535e; white-space: nowrap; font-weight: 650; font-size: 11px; }
+    .pill .dot { width: 7px; height: 7px; border-radius: 99px; background: var(--teal); }
+    .page { max-width: 1440px; margin: 0 auto; padding: 26px 32px 54px; }
+    .breadcrumbs { display: flex; align-items: center; gap: 8px; color: #71828a; font-size: 11px; letter-spacing: .035em; text-transform: uppercase; font-weight: 700; margin-bottom: 15px; }
+    .crumb-current { color: var(--navy); }
+    .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 25px; align-items: stretch; margin-bottom: 20px; }
+    .hero-copy { padding: 16px 0 13px; }
+    .overline { color: var(--teal); text-transform: uppercase; font-size: 10px; font-weight: 800; letter-spacing: .13em; display: flex; gap: 8px; align-items: center; }
+    .overline .rule { height: 1px; width: 26px; background: var(--teal); }
+    h1 { font-size: clamp(29px, 3.3vw, 43px); line-height: 1.05; letter-spacing: -.045em; max-width: 660px; margin: 13px 0 10px; color: #132b37; }
+    .hero-copy p { color: #60717a; font-size: 14px; margin: 0; max-width: 650px; line-height: 1.62; }
+    .hero-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 17px; }
+    .tag { font-size: 10px; letter-spacing: .01em; font-weight: 750; display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; padding: 5px 8px; }
+    .tag.synthetic { color: #66500d; background: #fff3c9; border: 1px solid #f1dda0; }
+    .tag.public { color: #1a5573; background: #e4f2f9; border: 1px solid #c7e1ef; }
+    .tag .mini-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+    .hero-image { min-height: 177px; border-radius: var(--radius); overflow: hidden; position: relative; box-shadow: var(--shadow); background: #d7e3e5; }
+    .hero-image img { width: 100%; height: 100%; position: absolute; inset: 0; object-fit: cover; }
+    .image-overlay { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(11,37,48,.66), rgba(11,37,48,.15) 75%), linear-gradient(0deg, rgba(11,37,48,.28), transparent 54%); }
+    .image-caption { position: absolute; left: 18px; bottom: 15px; color: #fff; }
+    .image-caption b { display: block; font-size: 13px; letter-spacing: -.01em; }
+    .image-caption span { font-size: 10px; color: rgba(255,255,255,.83); }
+    .image-badge { position: absolute; right: 13px; top: 13px; background: rgba(13,40,50,.68); border: 1px solid rgba(255,255,255,.23); color: #fff; padding: 5px 8px; border-radius: 6px; font-size: 9px; font-weight: 750; letter-spacing: .04em; backdrop-filter: blur(8px); }
+    .control-card, .panel, .kpi-card, .source-card, .insight-card { border: 1px solid var(--line); background: var(--paper); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .control-card { padding: 13px 17px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .control-title { min-width: 210px; }
+    .control-title strong { font-size: 12px; display: block; color: #233943; }
+    .control-title span { font-size: 10px; color: #74828a; }
+    .timeline-controls { display: flex; align-items: center; gap: 8px; flex: 1; }
+    .icon-button { border: 1px solid var(--line); background: #fff; color: #344d58; border-radius: 8px; width: 32px; height: 32px; display: inline-grid; place-items: center; transition: .18s ease; }
+    .icon-button:hover { border-color: #9eb8c0; background: #f6fafb; }
+    .icon-button svg { width: 14px; height: 14px; }
+    .play-button { background: var(--navy); color: #fff; border-color: var(--navy); width: 36px; height: 36px; }
+    .play-button:hover { background: #214d5d; color: white; }
+    .slider-wrap { display: flex; align-items: center; gap: 11px; flex: 1; min-width: 120px; margin: 0 7px; }
+    input[type=range] { accent-color: var(--teal); width: 100%; height: 4px; }
+    .sim-time { font-variant-numeric: tabular-nums; font-size: 10px; color: #485d67; min-width: 72px; text-align: right; }
+    .live-label { color: var(--teal); font-weight: 800; font-size: 9px; letter-spacing: .08em; min-width: 30px; }
+    .speed-select { border: 1px solid var(--line); color: #485d67; border-radius: 7px; background: #fff; font-size: 10px; padding: 7px 8px; }
+    .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 17px; }
+    .kpi-card { padding: 14px 16px 12px; min-height: 105px; }
+    .kpi-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; color: #71818a; font-size: 10px; font-weight: 700; }
+    .kpi-help { width: 15px; height: 15px; border: 1px solid #c9d4d8; color: #6a7d85; display: inline-grid; place-items: center; border-radius: 50%; font-size: 9px; font-weight: 800; cursor: help; }
+    .kpi-val { margin-top: 8px; font-size: 25px; letter-spacing: -.04em; line-height: 1; font-weight: 750; color: #18313d; font-variant-numeric: tabular-nums; }
+    .kpi-foot { display: flex; align-items: center; gap: 6px; color: #819097; font-size: 9px; margin-top: 7px; }
+    .kpi-change { font-weight: 800; color: var(--red); }
+    .section-head { display: flex; justify-content: space-between; align-items: end; gap: 14px; margin: 25px 0 11px; }
+    .section-head h2 { font-size: 15px; letter-spacing: -.02em; margin: 0; color: #203640; }
+    .section-head p { margin: 3px 0 0; color: #75848b; font-size: 10px; }
+    .subdued { color: #73828a; font-size: 10px; }
+    .grid-main { display: grid; grid-template-columns: minmax(0, 1.62fr) minmax(280px, .86fr); gap: 15px; align-items: start; }
+    .panel { overflow: hidden; }
+    .panel-header { min-height: 53px; padding: 13px 17px; display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px solid #e8edef; }
+    .panel-header h3 { font-size: 12px; margin: 0; color: #263b45; }
+    .panel-header .hint { font-size: 9px; color: #76858c; }
+    .order-chips { display: flex; gap: 6px; align-items: center; }
+    .order-chip { border: 1px solid #dce4e7; color: #5e7078; background: #fff; padding: 6px 9px; border-radius: 7px; font-size: 9px; font-weight: 750; }
+    .order-chip[aria-pressed="true"] { color: #fff; border-color: var(--navy); background: var(--navy); }
+    .process-wrap { padding: 19px 17px 14px; overflow-x: auto; }
+    .process { display: grid; grid-template-columns: repeat(9, minmax(96px, 1fr)); min-width: 862px; position: relative; }
+    .process::before { content: ""; position: absolute; top: 15px; left: 4.8%; right: 4.8%; height: 2px; background: #dbe5e7; }
+    .step { position: relative; text-align: center; padding: 0 4px; }
+    .step-node { width: 30px; height: 30px; margin: 0 auto 9px; border: 2px solid #cfdbdf; background: #fff; color: #87959b; border-radius: 50%; position: relative; z-index: 1; display: grid; place-items: center; font-weight: 800; font-size: 10px; }
+    .step.done .step-node { color: #fff; background: var(--teal); border-color: var(--teal); }
+    .step.active .step-node { color: #fff; background: var(--amber); border-color: var(--amber); box-shadow: 0 0 0 4px #fff1d9; }
+    .step.blocked .step-node { color: #fff; background: var(--red); border-color: var(--red); box-shadow: 0 0 0 4px #fde9e4; }
+    .step-title { font-size: 9px; font-weight: 750; line-height: 1.25; color: #435760; min-height: 23px; }
+    .step-owner { font-size: 8px; line-height: 1.25; color: #86949a; margin-top: 3px; }
+    .stage-detail { margin: 1px 17px 16px; padding: 12px 13px; display: grid; grid-template-columns: 1.05fr 1.25fr 1fr; gap: 13px; background: #f8fafb; border: 1px solid #e8eef0; border-radius: 9px; }
+    .detail-label { text-transform: uppercase; letter-spacing: .08em; color: #87949a; font-size: 8px; font-weight: 800; margin-bottom: 4px; }
+    .detail-value { color: #314851; font-size: 10px; line-height: 1.42; font-weight: 620; }
+    .detail-value.danger { color: #a0433f; }
+    .journey-gate { margin: 0 17px 16px; color: #695014; background: #fff6df; border: 1px solid #efdfaa; border-radius: 8px; padding: 9px 11px; font-size: 9px; display: flex; gap: 8px; align-items: flex-start; }
+    .journey-gate b { color: #58430d; }
+    .gate-icon { flex: 0 0 17px; height: 17px; display: grid; place-items: center; border-radius: 50%; background: #f5d67c; color: #5a4304; font-size: 10px; font-weight: 900; }
+    .order-list { border-top: 1px solid #e8edef; }
+    .order-list-head, .order-row { display: grid; grid-template-columns: 1.15fr 1fr .8fr .7fr; gap: 10px; align-items: center; padding: 10px 17px; }
+    .order-list-head { color: #829097; background: #fafcfc; font-size: 8px; text-transform: uppercase; letter-spacing: .06em; font-weight: 800; }
+    .order-row { border-top: 1px solid #f0f3f4; font-size: 9px; color: #52656e; cursor: pointer; transition: background .15s; }
+    .order-row:hover, .order-row.selected { background: #f3faf8; }
+    .order-id { color: #243c46; font-size: 10px; font-weight: 800; }
+    .order-sub { color: #869399; font-size: 8px; margin-top: 2px; }
+    .status { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 4px 7px; font-size: 8px; font-weight: 750; white-space: nowrap; }
+    .status.hold { color: #8f3e39; background: #fdebe8; }
+    .status.waiting { color: #83500e; background: #fff2df; }
+    .status.planned { color: #365e79; background: #eaf3f8; }
+    .status .sdot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+    .right-stack { display: grid; gap: 14px; }
+    .event-list { padding: 3px 17px 12px; max-height: 244px; overflow-y: auto; }
+    .event { display: grid; grid-template-columns: 44px 14px 1fr; gap: 7px; padding: 9px 0 7px; border-bottom: 1px solid #eff3f4; }
+    .event:last-child { border-bottom: 0; }
+    .event-time { color: #849198; font-size: 8px; font-variant-numeric: tabular-nums; padding-top: 2px; }
+    .event-mark { position: relative; display: flex; justify-content: center; }
+    .event-mark::after { content: ""; position: absolute; top: 10px; bottom: -18px; width: 1px; background: #d9e3e5; }
+    .event:last-child .event-mark::after { display: none; }
+    .event-dot { width: 8px; height: 8px; border: 2px solid #65a29a; background: #fff; border-radius: 50%; position: relative; z-index: 1; margin-top: 2px; }
+    .event.current .event-dot { background: var(--amber); border-color: var(--amber); }
+    .event-title { color: #344a54; font-size: 9px; font-weight: 750; }
+    .event-text { color: #7b8a90; font-size: 8px; margin-top: 2px; line-height: 1.4; }
+    .strategy-body { padding: 13px 15px 15px; }
+    .strategy-intro { color: #728189; font-size: 9px; margin: 0 0 10px; }
+    .strategy-option { border: 1px solid #e1e8ea; border-radius: 9px; padding: 10px; margin: 8px 0; background: #fff; transition: border .16s, background .16s, transform .16s; }
+    .strategy-option:hover { border-color: #94b7b7; transform: translateY(-1px); }
+    .strategy-option.active { border-color: var(--teal); background: #f1faf8; box-shadow: 0 0 0 2px rgba(20,125,120,.08); }
+    .strategy-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .strategy-name { display: flex; align-items: center; gap: 8px; color: #344a53; font-size: 10px; font-weight: 800; }
+    .strategy-icon { width: 21px; height: 21px; border-radius: 6px; background: #e6f1ef; color: #28746e; display: grid; place-items: center; font-size: 10px; }
+    .strategy-impact { font-size: 8px; font-weight: 800; color: #687981; }
+    .strategy-desc { margin: 6px 0 7px 29px; color: #71818a; font-size: 8px; line-height: 1.4; }
+    .strategy-metrics { display: flex; gap: 6px; flex-wrap: wrap; margin-left: 29px; }
+    .mini-stat { border-radius: 5px; padding: 3px 5px; background: #f2f5f6; color: #65767d; font-size: 7px; font-weight: 750; }
+    .strategy-note { color: #74828a; font-size: 8px; line-height: 1.45; margin: 10px 1px 0; padding-top: 9px; border-top: 1px solid #ebeff0; }
+    .strategy-note b { color: #374c55; }
+    .lower-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(270px, .75fr); gap: 15px; margin-top: 16px; }
+    .compare-wrap { padding: 14px 17px 16px; }
+    .compare-label { display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #667880; margin-bottom: 12px; }
+    .compare-label strong { color: #354b54; font-size: 10px; }
+    .compare-table { width: 100%; border-collapse: collapse; font-size: 9px; }
+    .compare-table th { text-align: left; color: #839198; font-size: 8px; font-weight: 750; border-bottom: 1px solid #e9eef0; padding: 0 8px 8px; }
+    .compare-table td { padding: 9px 8px; border-bottom: 1px solid #f0f3f4; color: #4b6069; }
+    .compare-table tr:last-child td { border-bottom: 0; }
+    .compare-table td:first-child { color: #334951; font-weight: 700; }
+    .positive { color: #287754 !important; font-weight: 800; }
+    .negative { color: #a8433e !important; font-weight: 800; }
+    .neutral { color: #526a75 !important; font-weight: 750; }
+    .context-card { padding: 14px 16px 15px; }
+    .context-top { display: flex; justify-content: space-between; align-items: start; gap: 8px; }
+    .context-top h3 { margin: 0; font-size: 11px; color: #324750; }
+    .context-date { color: #829198; font-size: 8px; text-align: right; }
+    .context-value { font-size: 28px; line-height: 1; letter-spacing: -.04em; font-weight: 780; color: #213d4b; margin-top: 15px; }
+    .context-value small { font-size: 12px; letter-spacing: 0; }
+    .context-desc { margin-top: 5px; color: #718189; font-size: 9px; }
+    .context-foot { margin-top: 11px; padding-top: 9px; border-top: 1px solid #edf1f2; color: #718189; font-size: 8px; line-height: 1.45; }
+    .context-foot a { font-weight: 750; }
+    .insights { margin-top: 23px; }
+    .insight-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+    .insight-card { padding: 14px 15px; display: grid; grid-template-columns: 27px 1fr; gap: 10px; box-shadow: none; }
+    .insight-icon { width: 27px; height: 27px; border-radius: 8px; background: #e6f0f2; color: #326a73; display: grid; place-items: center; font-size: 12px; font-weight: 850; }
+    .insight-card h3 { font-size: 10px; margin: 1px 0 4px; color: #30474f; }
+    .insight-card p { margin: 0; color: #718089; font-size: 8px; line-height: 1.5; }
+    .sources { margin-top: 20px; border-top: 1px solid #dfe6e8; padding-top: 12px; display: flex; gap: 18px; flex-wrap: wrap; justify-content: space-between; }
+    .sources-title { color: #697a82; font-size: 9px; font-weight: 800; }
+    .source-links { display: flex; gap: 13px; flex-wrap: wrap; color: #6f8087; font-size: 8px; }
+    .source-links a { font-weight: 700; }
+    .source-note { max-width: 590px; color: #7a888e; font-size: 8px; line-height: 1.5; }
+    .toast { position: fixed; left: 50%; bottom: 24px; transform: translate(-50%, 18px); background: #153340; color: #fff; border-radius: 8px; padding: 10px 14px; font-size: 11px; box-shadow: 0 10px 28px rgba(0,0,0,.2); opacity: 0; pointer-events: none; transition: .2s ease; z-index: 60; max-width: min(520px, calc(100vw - 30px)); }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media(max-width: 980px) { .page { padding: 20px 18px 42px; } .topbar { padding: 0 18px; } .grid-main { grid-template-columns: minmax(0, 1.35fr) minmax(260px, .8fr); } .hero { grid-template-columns: 1fr .8fr; } }
+    @media(max-width: 780px) { .hero { grid-template-columns: 1fr; gap: 12px; } .hero-image { min-height: 190px; } .control-card { align-items: flex-start; flex-direction: column; gap: 11px; } .timeline-controls { width: 100%; } .grid-main, .lower-grid { grid-template-columns: 1fr; } .right-stack { grid-template-columns: 1fr 1fr; align-items: start; } .kpis { grid-template-columns: repeat(2, 1fr); } .stage-detail { grid-template-columns: 1fr 1fr; } .stage-detail > div:last-child { grid-column: 1 / -1; } .top-right .view-label { display: none; } }
+    @media(max-width: 520px) { .topbar { height: 57px; padding: 0 13px; } .page { padding: 16px 12px 34px; } .brand { font-size: 15px; } .top-right { gap: 8px; } .top-right .pill { font-size: 9px; padding: 5px 7px; } .hero-copy { padding-top: 4px; } h1 { font-size: 31px; } .hero-image { min-height: 155px; } .control-title { min-width: 0; } .live-label { display: none; } .speed-select { padding: 6px; } .kpi-card { padding: 12px; min-height: 98px; } .kpi-val { font-size: 22px; } .right-stack { grid-template-columns: 1fr; } .panel-header { padding: 12px; } .order-chips { gap: 4px; } .order-chip { padding: 6px; font-size: 8px; } .process-wrap { padding: 17px 11px 13px; } .stage-detail { margin: 1px 11px 12px; padding: 10px; gap: 10px; } .journey-gate { margin: 0 11px 13px; } .order-list-head, .order-row { padding: 9px 11px; grid-template-columns: .9fr 1fr .72fr .6fr; gap: 6px; } .order-list-head { font-size: 7px; } .order-row { font-size: 8px; } .status { font-size: 7px; padding: 4px 5px; } .insight-grid { grid-template-columns: 1fr; } .compare-wrap { padding: 13px 11px; } .compare-table { font-size: 8px; } .compare-table td, .compare-table th { padding-left: 5px; padding-right: 5px; } }
+    @media(prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+  </style>
+</head>
+<body>
+<div class="shell">
+  <header class="topbar">
+    <a class="brand" href="#top" aria-label="Linework home">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 17.5h4v-5h4v-6h4v10h4" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="4" cy="17.5" r="1.4" fill="currentColor"/><circle cx="20" cy="16.5" r="1.4" fill="currentColor"/></svg></span>
+      Linework <span style="font-size:10px;font-weight:650;color:#829198;letter-spacing:0">/ learning lab</span>
+    </a>
+    <div class="top-right"><span class="view-label">OPERATIONS SIMULATION</span><span class="pill"><span class="dot"></span>Teaching model</span></div>
+  </header>
+  <main class="page" id="top">
+    <div class="breadcrumbs"><span>Learning lab</span><span aria-hidden="true">/</span><span>Discrete manufacturing</span><span aria-hidden="true">/</span><span class="crumb-current">Order-to-cash</span></div>
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <div class="overline"><span class="rule"></span> The company, in motion</div>
+        <h1 id="page-title">Three orders. One bottleneck. Every decision travels.</h1>
+        <p>Walk through a fictional conveyor-module maker on a disrupted shift. Follow one customer order across teams, see why it is waiting, then compare the operational consequences of three recovery choices.</p>
+        <div class="hero-meta"><span class="tag synthetic"><span class="mini-dot"></span>Invented teaching example</span><span class="tag public"><span class="mini-dot"></span>Public context clearly separated</span></div>
+      </div>
+      <div class="hero-image" aria-label="Illustrative rendering of a modern factory floor">
+        <img src="./assets/factory.jpg" alt="Illustrative modern factory floor with assembly equipment" />
+        <div class="image-overlay"></div><span class="image-badge">FICTIONAL FACILITY</span>
+        <div class="image-caption"><b>Northline Motion Works</b><span>Configurable conveyor modules · teaching simulation</span></div>
+      </div>
+    </section>
+
+    <section class="control-card" aria-label="Scenario replay controls">
+      <div class="control-title"><strong>Disruption replay</strong><span>Supplier delay + one final-test failure · simulation clock</span></div>
+      <div class="timeline-controls">
+        <button class="icon-button" id="prevBtn" aria-label="Previous event" title="Previous event (Left Arrow)"><svg viewBox="0 0 20 20" fill="none"><path d="M12.7 4.5 7.2 10l5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="icon-button play-button" id="playBtn" aria-label="Play replay" title="Play or pause (Space)"><svg id="playIcon" viewBox="0 0 20 20" fill="currentColor"><path d="M6 3.8c0-.6.7-1 1.2-.7l8.1 5.1c.5.3.5 1 0 1.4l-8.1 5.1c-.5.4-1.2 0-1.2-.6V3.8Z"/></svg></button>
+        <button class="icon-button" id="nextBtn" aria-label="Next event" title="Next event (Right Arrow)"><svg viewBox="0 0 20 20" fill="none"><path d="m7.3 4.5 5.5 5.5-5.5 5.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <div class="slider-wrap"><label class="sr-only" for="eventSlider">Replay position</label><input id="eventSlider" type="range" min="0" max="5" value="5" step="1" /><span class="sim-time" id="simTime" aria-live="polite">11:20</span></div>
+        <span class="live-label" id="playState">PAUSED</span>
+        <label class="sr-only" for="speedSelect">Replay speed</label><select class="speed-select" id="speedSelect" aria-label="Replay speed"><option value="1800">1×</option><option value="900">2×</option><option value="450">4×</option></select>
+        <button class="icon-button" id="resetBtn" aria-label="Reset simulation" title="Reset simulation"><svg viewBox="0 0 20 20" fill="none"><path d="M3.2 8A6.9 6.9 0 1 1 3 11.5M3.2 4.4v3.9H7" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
+    </section>
+
+    <section class="kpis" aria-label="Scenario key performance indicators">
+      <article class="kpi-card"><div class="kpi-top"><span>Forecast on-time orders</span><span class="kpi-help" title="Share of the 3 simulated orders forecast to meet their requested promise date. Partial shipments do not count as complete." aria-label="Forecast on-time orders: share of three orders forecast to meet promise date; partial shipment does not count as complete">i</span></div><div class="kpi-val" id="kpiOnTime">67%</div><div class="kpi-foot"><span class="kpi-change" id="kpiOnTimeDelta">−33 pts</span><span>vs. baseline 100%</span></div></article>
+      <article class="kpi-card"><div class="kpi-top"><span>Final-test queue</span><span class="kpi-help" title="Modeled waiting time before a unit can use the single constrained final-test bench." aria-label="Final-test queue: modeled wait for the single constrained final-test bench">i</span></div><div class="kpi-val" id="kpiQueue">5.0 <small style="font-size:13px;font-weight:650">h</small></div><div class="kpi-foot"><span class="kpi-change" id="kpiQueueDelta">+3.0 h</span><span>vs. baseline 2.0 h</span></div></article>
+      <article class="kpi-card"><div class="kpi-top"><span>Work in process</span><span class="kpi-help" title="Synthetic value of units released to production but not yet fully shipped; it rises if work is resequenced into the cell." aria-label="Work in process value: modeled value of units not yet fully shipped">i</span></div><div class="kpi-val" id="kpiWip">$48.6k</div><div class="kpi-foot"><span id="kpiWipDelta">$0 vs. disrupted base</span><span>· simulated</span></div></article>
+      <article class="kpi-card"><div class="kpi-top"><span>Recovery spend</span><span class="kpi-help" title="Incremental scenario cost in this toy model; excludes any real taxes, contracts, or supplier terms." aria-label="Recovery spend: modeled incremental action cost, not actual contract pricing">i</span></div><div class="kpi-val" id="kpiSpend">$0</div><div class="kpi-foot"><span id="kpiSpendDelta">No action chosen</span><span>· simulated</span></div></article>
+    </section>
+
+    <section class="section-head"><div><h2>Follow an order across the company</h2><p>Choose an order to see its current owner, waiting reason, next handoff and dependencies.</p></div><span class="subdued">One assembly cell · one final-test bench</span></section>
+    <section class="grid-main">
+      <article class="panel" aria-labelledby="journey-title">
+        <div class="panel-header"><div><h3 id="journey-title">Order journey</h3><span class="hint" id="journeySub">Selected: KX-104 · 8 conveyor modules</span></div><div class="order-chips" role="group" aria-label="Choose an order"><button class="order-chip" data-order="KX-104" aria-pressed="true">KX-104</button><button class="order-chip" data-order="KX-105" aria-pressed="false">KX-105</button><button class="order-chip" data-order="KX-106" aria-pressed="false">KX-106</button></div></div>
+        <div class="process-wrap"><div class="process" id="processTrack" role="list" aria-label="Order-to-cash steps"></div></div>
+        <div class="stage-detail" id="stageDetail" aria-live="polite"></div>
+        <div class="journey-gate"><span class="gate-icon" aria-hidden="true">!</span><span><b>Control rule:</b> shipment is blocked until Quality releases the unit. Failed units stay on hold and follow rework → retest. This model has no unapproved component-substitution path.</span></div>
+        <div class="order-list">
+          <div class="order-list-head"><span>Customer order</span><span>Current state</span><span>Promise</span><span>Forecast</span></div>
+          <div id="orderRows"></div>
+        </div>
+      </article>
+
+      <div class="right-stack">
+        <article class="panel" aria-labelledby="event-history-title">
+          <div class="panel-header"><div><h3 id="event-history-title">Event history</h3><span class="hint">A small change, then a queue.</span></div><span class="tag synthetic">SIM TIME</span></div>
+          <div class="event-list" id="eventList" aria-live="polite"></div>
+        </article>
+        <article class="panel" aria-labelledby="strategy-title">
+          <div class="panel-header"><div><h3 id="strategy-title">Choose a recovery move</h3><span class="hint">Compare before committing in the sim.</span></div></div>
+          <div class="strategy-body">
+            <p class="strategy-intro">The supplier part is shared across orders. Keep quality gates intact; trade timing, queues and cost.</p>
+            <div id="strategyOptions"></div>
+            <div class="strategy-note" id="strategyNote"><b>No recovery chosen.</b> Baseline is 3/3 on time; current disruption forecast is 2/3. Every action below changes only the teaching model.</div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="lower-grid">
+      <article class="panel" aria-labelledby="compare-title">
+        <div class="panel-header"><div><h3 id="compare-title">Baseline vs. this shift</h3><span class="hint">The model makes dependencies visible—not a production-grade planning engine.</span></div><span class="tag synthetic">ALL VALUES SYNTHETIC</span></div>
+        <div class="compare-wrap"><div class="compare-label"><strong id="comparisonLabel">Disrupted base case</strong><span>Baseline → selected scenario</span></div>
+          <table class="compare-table"><thead><tr><th scope="col">Measure</th><th scope="col">Baseline</th><th scope="col">Selected</th><th scope="col">What moved</th></tr></thead><tbody id="comparisonRows"></tbody></table>
+        </div>
+      </article>
+      <article class="panel context-card" aria-labelledby="public-context-title">
+        <div class="context-top"><div><h3 id="public-context-title">Public context, not a live control</h3><span class="tag public" style="margin-top:7px">PUBLISHED INDICATOR</span></div><div class="context-date">Reference month<br><b>August 2026</b></div></div>
+        <div class="context-value">+1.1<small>%</small></div>
+        <div class="context-desc">U.S. final-demand goods Producer Price Index · month over month</div>
+        <div class="context-foot">Reported by BLS on 10 Sep 2026; a lagged national indicator, not this fictional plant’s material quote or a real-time signal. It does not change any simulated cost. <a href="https://www.bls.gov/news.release/ppi.nr0.htm" target="_blank" rel="noreferrer">Open BLS release ↗</a></div>
+      </article>
+    </section>
+
+    <section class="insights" aria-labelledby="learning-title">
+      <div class="section-head"><div><h2 id="learning-title">What this first pilot teaches</h2><p>The visual model is intentionally small enough to inspect and replay.</p></div></div>
+      <div class="insight-grid">
+        <article class="insight-card"><div class="insight-icon">↔</div><div><h3>Companies run on handoffs</h3><p>Sales, engineering, planning, procurement, production, quality, shipping and finance each own a step. A queue or missing dependency crosses team boundaries.</p></div></article>
+        <article class="insight-card"><div class="insight-icon">⌁</div><div><h3>Capacity makes promises real</h3><p>The single assembly cell and constrained test bench limit throughput. A promise date depends on both material availability and finite capacity—not just order entry.</p></div></article>
+        <article class="insight-card"><div class="insight-icon">✓</div><div><h3>Controls matter under pressure</h3><p>Resequence, expedite or offer a partial shipment. The model shows trade-offs while preserving the quality-release gate and blocking unapproved substitutions.</p></div></article>
+      </div>
+    </section>
+    <footer class="sources"><div><div class="sources-title">Research basis &amp; model boundary</div><div class="source-note">Fictional, configurable teaching example; not a real-company clone, operational advice, or digital twin of a real plant. Process shape is grounded in public references. Every order, quantity, time, cost, queue, forecast, capacity and event shown in the simulator is invented. Public context is separately labeled and does not drive the event rules.</div></div><div class="source-links"><a href="https://www.nist.gov/publications/case-study-digital-twin-manufacturing-process-involving-human-interactions" target="_blank" rel="noreferrer">NIST · manufacturing digital twin case ↗</a><a href="https://www.gep.com/blog/strategy/order-to-cash-vs-procure-to-pay" target="_blank" rel="noreferrer">GEP · order-to-cash stages ↗</a><a href="https://www.eia.gov/opendata/" target="_blank" rel="noreferrer">EIA · open energy data ↗</a></div></footer>
+  </main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+(() => {
+  const steps = [
+    {name:'Order & configuration',owner:'Customer Ops'}, {name:'Engineering / BOM',owner:'Engineering'}, {name:'Finite-capacity plan',owner:'Planning'}, {name:'Purchase / lot receipt',owner:'Procurement'}, {name:'Kitting',owner:'Materials'}, {name:'Assembly cell',owner:'Production'}, {name:'Final test',owner:'Quality'}, {name:'Ship',owner:'Logistics'}, {name:'Invoice / collect',owner:'Finance'}
+  ];
+  const orders = {
+    'KX-104': {product:'Drive module · custom ratio',qty:8,due:'Oct 16',state:'Quality hold',kind:'hold',stage:6,owner:'Quality technician',waiting:'1 of 8 units failed the first final-test cycle; 7 passed and remain releasable.',next:'Repair technician → test bench for a rework slot; passed units stay traceable by serial.',deps:'Released BOM · rework disposition · available bench time',eta:'Oct 16',units:'7 / 8 pass · 1 held'},
+    'KX-105': {product:'Belt module · standard',qty:12,due:'Oct 17',state:'Material wait',kind:'waiting',stage:3,owner:'Buyer / receiving',waiting:'Shared encoder lot is delayed by the supplier; no substitution is approved in the BOM.',next:'Supplier receipt → incoming lot inspection → kit release.',deps:'Approved encoder lot · receiving inspection · cell slot',eta:'Oct 18',units:'12 waiting · 0 released'},
+    'KX-106': {product:'Feeder module · compact',qty:6,due:'Oct 20',state:'Planned',kind:'planned',stage:2,owner:'Production planner',waiting:'No active hold. The released BOM is waiting for a finite-capacity slot behind the urgent work.',next:'Planner releases slot → materials picks kit → assembly cell.',deps:'Cell availability · complete kit · final-test reservation',eta:'Oct 20',units:'6 planned · 0 released'}
+  };
+  const history = [
+    {time:'08:00',title:'Order KX-104 configured',text:'Customer Ops captures 8 units and a promise date; configuration routes to Engineering.'},
+    {time:'08:24',title:'BOM revision released',text:'Engineering locks the approved encoder and confirms no alternate component is authorized.'},
+    {time:'09:10',title:'Finite-capacity plan frozen',text:'One assembly cell and one final-test bench are loaded against the three order promises.'},
+    {time:'10:30',title:'Supplier date slips',text:'Shared encoder lot moves out by 2 days; KX-105 waits and KX-106 competes for later capacity.'},
+    {time:'11:05',title:'One unit fails final test',text:'KX-104 serial 008 enters quality hold; seven units pass. Failed unit cannot ship.'},
+    {time:'11:20',title:'Recovery decision is due',text:'Planner can resequence, buyer can expedite the shared part, or Customer Ops can propose a partial shipment.'}
+  ];
+  const moves = {
+    none:{label:'Disrupted base case',ontime:67,queue:5.0,wip:48.6,spend:0,shipped:'0 partial',late:'KX-105 +1 day',why:'The supplier delay pushes KX-105 one day beyond promise. KX-104 can still finish rework and retest inside its date if the bench slot holds.'},
+    resequence:{label:'Resequence the cell',ontime:67,queue:3.5,wip:51.2,spend:0,shipped:'No early ship',late:'KX-105 +1 day',why:'Use the open cell slot for KX-104 rework and KX-106 while material is missing. Test queue falls, but KX-105 still waits; extra WIP is staged.'},
+    expedite:{label:'Expedite shared encoder',ontime:100,queue:5.0,wip:42.8,spend:1.25,shipped:'No partial',late:'None forecast',why:'Assume premium freight advances the lot by one day and incoming inspection passes. All three dates recover; modeled spend is $1,250, with test still the bottleneck.'},
+    partial:{label:'Offer a partial shipment',ontime:67,queue:4.5,wip:39.1,spend:0,shipped:'7 KX-104 units',late:'KX-105 +1 day',why:'Assume the customer accepts 7 already-passed units on KX-104. The failed eighth unit remains on hold for rework and retest; KX-105 is still late.'}
+  };
+  let selectedOrder = 'KX-104';
+  let selectedMove = 'none';
+  let eventIndex = 5;
+  let playing = false;
+  let timer = null;
+  const $ = (s) => document.querySelector(s);
+  const $$ = (s) => [...document.querySelectorAll(s)];
+  const fmtK = (n) => '$' + n.toFixed(1) + 'k';
+  function toast(msg){ const el=$('#toast'); el.textContent=msg; el.classList.add('show'); clearTimeout(toast.timer); toast.timer=setTimeout(()=>el.classList.remove('show'),2600); }
+  function replayStage(){
+    if(selectedOrder==='KX-104') return eventIndex < 1 ? 0 : eventIndex < 2 ? 1 : eventIndex < 3 ? 2 : eventIndex < 4 ? 5 : 6;
+    if(selectedOrder==='KX-105') return eventIndex < 3 ? 2 : 3;
+    return eventIndex < 2 ? 1 : 2;
+  }
+  function renderTrack(){
+    const o=orders[selectedOrder];
+    const stage=replayStage();
+    $('#processTrack').innerHTML=steps.map((s,i)=>{
+      let status='';
+      if(i<stage) status='done'; else if(i===stage) status=(selectedOrder==='KX-104'&&eventIndex>=4?'blocked':'active'); else status='';
+      if(selectedMove==='partial' && selectedOrder==='KX-104' && i===7) status='active';
+      const symbol=status==='done'?'✓':status==='blocked'?'!':i+1;
+      return `<div class="step ${status}" role="listitem" aria-label="${s.name}, ${status||'not started'}, owner ${s.owner}"><div class="step-node" aria-hidden="true">${symbol}</div><div class="step-title">${s.name}</div><div class="step-owner">${s.owner}</div></div>`;
+    }).join('');
+    $('#journeySub').textContent=`Selected: ${selectedOrder} · ${o.qty} ${o.product.toLowerCase().split(' · ')[0]}s`;
+    $('#stageDetail').innerHTML=`<div><div class="detail-label">Current owner</div><div class="detail-value">${o.owner}</div></div><div><div class="detail-label">Waiting reason</div><div class="detail-value ${o.kind==='hold'?'danger':''}">${o.waiting}</div></div><div><div class="detail-label">Next handoff · dependencies</div><div class="detail-value">${o.next}<br><span style="color:#819097;font-weight:500">Needs: ${o.deps}</span></div></div>`;
+    $$('.order-chip').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.order===selectedOrder)));
+    $$('.order-row').forEach(r=>r.classList.toggle('selected',r.dataset.order===selectedOrder));
+  }
+  function forecastOrder(id){
+    const move=moves[selectedMove];
+    if(id==='KX-104') return selectedMove==='partial'?'Partial · 7 released':'Oct 16';
+    if(id==='KX-105') return selectedMove==='expedite'?'Oct 17':'Oct 18';
+    return 'Oct 20';
+  }
+  function renderOrders(){
+    $('#orderRows').innerHTML=Object.entries(orders).map(([id,o])=>`<div class="order-row ${id===selectedOrder?'selected':''}" data-order="${id}" role="button" tabindex="0" aria-label="Select order ${id}"><div><div class="order-id">${id}</div><div class="order-sub">${o.qty} units · ${o.product}</div></div><div><span class="status ${o.kind}"><span class="sdot"></span>${o.state}</span><div class="order-sub">${o.units}</div></div><div><div style="font-weight:750;color:#536770">${o.due}</div><div class="order-sub">promise</div></div><div><div style="font-weight:800;color:${selectedMove==='expedite'&&id==='KX-105'?'#287754':id==='KX-105'?'#9a641b':'#526b74'}">${forecastOrder(id)}</div><div class="order-sub">forecast</div></div></div>`).join('');
+    $$('.order-row').forEach(r=>{r.addEventListener('click',()=>selectOrder(r.dataset.order));r.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectOrder(r.dataset.order)}})});
+  }
+  function renderHistory(){
+    $('#eventList').innerHTML=history.slice(0,eventIndex+1).map((e,i)=>`<div class="event ${i===eventIndex?'current':''}"><div class="event-time">${e.time}</div><div class="event-mark"><span class="event-dot"></span></div><div><div class="event-title">${e.title}</div><div class="event-text">${e.text}</div></div></div>`).join('');
+    $('#simTime').textContent=history[eventIndex]?.time||'08:00';
+    $('#eventSlider').value=eventIndex;
+  }
+  function renderMoves(){
+    const items=[
+      {id:'resequence',icon:'↔',name:'Resequence',desc:'Move work in the single cell; protect the passed units and recover the held unit first.',chips:['$0 premium','test queue −1.5 h','WIP +$2.6k']},
+      {id:'expedite',icon:'↗',name:'Expedite the shared part',desc:'Pay for faster supplier transport; keep the approved BOM and incoming inspection.',chips:['+$1,250','all dates recover','test still 5 h']},
+      {id:'partial',icon:'⇢',name:'Offer partial shipment',desc:'Propose shipping only the 7 released KX-104 units; keep the failed unit on quality hold.',chips:['7 released units','complete order still late','WIP −$9.5k']}
+    ];
+    $('#strategyOptions').innerHTML=items.map(m=>`<button class="strategy-option ${selectedMove===m.id?'active':''}" data-move="${m.id}" aria-pressed="${selectedMove===m.id}" style="width:100%;text-align:left;color:inherit"><span class="strategy-top"><span class="strategy-name"><span class="strategy-icon" aria-hidden="true">${m.icon}</span>${m.name}</span><span class="strategy-impact">${selectedMove===m.id?'SELECTED':'COMPARE'}</span></span><span class="strategy-desc" style="display:block">${m.desc}</span><span class="strategy-metrics">${m.chips.map(c=>`<span class="mini-stat">${c}</span>`).join('')}</span></button>`).join('');
+    $$('.strategy-option').forEach(b=>b.addEventListener('click',()=>chooseMove(b.dataset.move)));
+    const m=moves[selectedMove];
+    const prefix=selectedMove==='none'?'No recovery chosen.':`${m.label}.`;
+    $('#strategyNote').innerHTML=`<b>${prefix}</b> ${m.why} <span style="color:#9a6b16">Decision rule: no shipment until release; partial shipment assumes customer acceptance.</span>`;
+  }
+  function renderCompare(){
+    const m=moves[selectedMove];
+    $('#comparisonLabel').textContent=selectedMove==='none'?'Disrupted base case':m.label;
+    const rows=[
+      ['Orders on promise','3 / 3',`${Math.round(m.ontime/100*3)} / 3`,m.ontime===100?'Expedite restores all dates':'One order remains at risk'],
+      ['Test wait','2.0 h',`${m.queue.toFixed(1)} h`,`${m.queue>2?'+':''}${(m.queue-2).toFixed(1)} h modeled wait`],
+      ['Work in process','$46.0k',fmtK(m.wip),`${m.wip>=46?'+':''}${fmtK(Math.abs(m.wip-46))} vs. baseline`],
+      ['Recovery cost','$0',m.spend?'$1,250':'$0',m.spend?'Premium transport assumption':'No incremental recovery spend'],
+      ['KX-104 shipment','8 released','7 released / 1 held',selectedMove==='partial'?'Partial offer; failed unit stays in rework':'No partial offer selected']
+    ];
+    $('#comparisonRows').innerHTML=rows.map((r,i)=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td class="${(i===0&&m.ontime===100)||(i===3&&m.spend===0)?'positive':(i===0&&m.ontime<100)||(i===3&&m.spend>0)?'negative':'neutral'}">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+  }
+  function renderKpis(){
+    const m=moves[selectedMove];
+    $('#kpiOnTime').textContent=m.ontime+'%'; $('#kpiOnTimeDelta').textContent=(m.ontime===100?'+0 pts':'−33 pts');
+    $('#kpiOnTimeDelta').style.color=m.ontime===100?'var(--green)':'var(--red)';
+    $('#kpiQueue').innerHTML=m.queue.toFixed(1)+' <small style="font-size:13px;font-weight:650">h</small>';
+    const qd=m.queue-2; $('#kpiQueueDelta').textContent=(qd>0?'+':'')+qd.toFixed(1)+' h';
+    $('#kpiWip').textContent=fmtK(m.wip); const wdiff=m.wip-48.6;
+    $('#kpiWipDelta').textContent=wdiff===0?'$0 vs. disrupted base':(wdiff>0?'+':'−')+fmtK(Math.abs(wdiff))+' vs. disrupted base';
+    $('#kpiSpend').textContent=m.spend?'$1,250':'$0';
+    $('#kpiSpendDelta').textContent=m.spend?'Premium supplier transport':'No incremental cost';
+  }
+  function selectOrder(id){selectedOrder=id;renderTrack();renderOrders();}
+  function chooseMove(id){selectedMove=id;renderMoves();renderKpis();renderCompare();renderOrders(); if(id==='partial'){toast('Partial offer selected: only 7 released units are eligible; the failed unit remains held.')} else if(id==='expedite'){toast('Expedite selected: the approved encoder lot still requires incoming inspection.')} else toast('Resequencing selected: capacity moved; quality gates remain unchanged.');}
+  function setPlaying(value){playing=value;$('#playState').textContent=playing?'PLAYING':'PAUSED';$('#playBtn').setAttribute('aria-label',playing?'Pause replay':'Play replay');$('#playIcon').innerHTML=playing?'<path d="M5 4.5c0-.6.4-1 1-1h1.5c.6 0 1 .4 1 1v11c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-11Zm6.5 0c0-.6.4-1 1-1H14c.6 0 1 .4 1 1v11c0 .6-.4 1-1 1h-1.5c-.6 0-1-.4-1-1v-11Z"/>':'<path d="M6 3.8c0-.6.7-1 1.2-.7l8.1 5.1c.5.3.5 1 0 1.4l-8.1 5.1c-.5.4-1.2 0-1.2-.6V3.8Z"/>';if(timer){clearInterval(timer);timer=null;} if(playing){timer=setInterval(()=>{if(eventIndex>=history.length-1){setPlaying(false);return;}eventIndex++;renderHistory();renderTrack();},Number($('#speedSelect').value));}}
+  function setEvent(i){eventIndex=Math.max(0,Math.min(history.length-1,i));renderHistory();renderTrack();if(playing&&eventIndex===history.length-1)setPlaying(false);}
+  function reset(){setPlaying(false);eventIndex=0;selectedMove='none';selectedOrder='KX-104';renderHistory();renderMoves();renderKpis();renderCompare();renderOrders();renderTrack();toast('Replay reset to the first event.');}
+  $$('.order-chip').forEach(b=>b.addEventListener('click',()=>selectOrder(b.dataset.order)));
+  $('#prevBtn').addEventListener('click',()=>setEvent(eventIndex-1));$('#nextBtn').addEventListener('click',()=>setEvent(eventIndex+1));$('#playBtn').addEventListener('click',()=>setPlaying(!playing));$('#resetBtn').addEventListener('click',reset);$('#eventSlider').addEventListener('input',e=>setEvent(Number(e.target.value)));$('#speedSelect').addEventListener('change',()=>{if(playing)setPlaying(true);});
+  window.addEventListener('keydown',e=>{if(e.target.matches('input,select,textarea,button,[contenteditable="true"]'))return;if(e.code==='Space'){e.preventDefault();setPlaying(!playing);}else if(e.key==='ArrowRight')setEvent(eventIndex+1);else if(e.key==='ArrowLeft')setEvent(eventIndex-1);});
+  renderTrack();renderOrders();renderHistory();renderMoves();renderKpis();renderCompare();
+})();
+</script>
+</body>
+</html>
